@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">Assignment1</string>
+    <string-array name="options">
+        <item>are</item>
+        <item>does</item>
+        <item>is</item>
+    </string-array>
+
+    <string-array name="options2">
+        <item>have</item>
+        <item>has</item>
+        <item>does</item>
+    </string-array>
+</resources>
