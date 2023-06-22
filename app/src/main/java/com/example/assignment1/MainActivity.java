@@ -1,11 +1,13 @@
 package com.example.assignment1;
 
-import androidx.appcompat.app.AppCompatActivity;
-
+import android.annotation.SuppressLint;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -13,16 +15,29 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+
+
 public class MainActivity extends AppCompatActivity {
+    public static final String SCORE = "SCORE";
+    public static final String FLAG = "FLAG";
+    private boolean flag = false;
     private int score = 0;
     private RadioButton radioButton1;
     private RadioButton radioButton2;
     private Spinner spinner1;
     private Spinner spinner2;
     private EditText answer;
-
     private Button submit;
     private TextView finalscore;
+
+    private TextView prevscore;
+
+    private SharedPreferences prefs;
+    private SharedPreferences.Editor editor;
+    private CheckBox chk;
+
+    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,13 +52,14 @@ public class MainActivity extends AppCompatActivity {
         spinner1 = findViewById(R.id.spinner);
         spinner2 = findViewById(R.id.spinner2);
 
-        spinner1.setSelection(-1);
-        spinner2.setSelection(-1);
+        chk = findViewById(R.id.chk);
 
-         answer = findViewById(R.id.editText);
+        answer = findViewById(R.id.editText);
          submit = findViewById(R.id.button);
 
         finalscore = findViewById(R.id.textView7);
+        prevscore = findViewById(R.id.textView12);
+
 
 
         radioButton1.setOnClickListener(new View.OnClickListener() {
@@ -103,6 +119,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+
             finalscore.setText("Your Score is: " + score + "/5");
             finalscore.setVisibility(View.VISIBLE);
 
@@ -120,6 +137,36 @@ public class MainActivity extends AppCompatActivity {
 
     }); // when the button is clicked firstly it will get the text and check whether it is correct or not
         // to increment the score , then it will display the score and the toast based on ur score
+        setupSharedPrefs();
+        checkPrefs();
 
         }
+
+    private void checkPrefs() {
+        flag = prefs.getBoolean(FLAG, false);
+
+        if(flag){
+            String score = prefs.getString(SCORE, "");
+            prevscore.setText("Your previous score is " +score);
+            chk.setChecked(true);
+        }
+    }
+    private void setupSharedPrefs() {
+        prefs= PreferenceManager.getDefaultSharedPreferences(this);
+        editor = prefs.edit();
+    }
+
+    public void btnLoginOnClick(View view) {
+        String score = finalscore.getText().toString();
+
+        if(chk.isChecked()){
+            if(!flag) {
+                editor.putString(SCORE, score);
+                editor.putBoolean(FLAG, true);
+                editor.commit();
+            }
+
+        }
+    }
+
 }
